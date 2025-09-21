@@ -1,0 +1,72 @@
+[gd_scene load_steps=6 format=3 uid="uid://dsqm68wyrv1vg"]
+
+[ext_resource type="Script" uid="uid://yqo1bhb0ptc2" path="res://game.gd" id="1_80nbo"]
+[ext_resource type="Texture2D" uid="uid://b25qhp03kivgw" path="res://assets/apple.png" id="2_e2o6t"]
+[ext_resource type="PackedScene" uid="uid://cgv3e8h7yn40r" path="res://apple.tscn" id="2_fc0e3"]
+[ext_resource type="PackedScene" uid="uid://b1oova6tjfpj" path="res://snake.tscn" id="3_feb5d"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_feb5d"]
+font_size = 30
+font_color = Color(0, 0, 0, 1)
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_80nbo")
+
+[node name="Background" type="ColorRect" parent="."]
+offset_right = 1152.0
+offset_bottom = 648.0
+color = Color(0.9607843, 0.9607843, 0.9607843, 1)
+
+[node name="Camera2D" type="Camera2D" parent="Background"]
+position = Vector2(578, 324)
+
+[node name="Playable area" type="Panel" parent="."]
+offset_left = 13.0
+offset_top = 12.0
+offset_right = 983.0
+offset_bottom = 622.0
+
+[node name="Rectangle" type="ColorRect" parent="Playable area"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 965.0
+offset_bottom = 605.0
+color = Color(0.69411767, 0.78039217, 0.69411767, 1)
+
+[node name="Apple" parent="Playable area/Rectangle" instance=ExtResource("2_fc0e3")]
+
+[node name="Snake" parent="Playable area/Rectangle" instance=ExtResource("3_feb5d")]
+
+[node name="Panel" type="Panel" parent="."]
+offset_left = 1010.0
+offset_top = 12.0
+offset_right = 1139.0
+offset_bottom = 90.0
+
+[node name="ColorRect" type="ColorRect" parent="Panel"]
+layout_mode = 0
+offset_left = 3.0
+offset_top = 3.0
+offset_right = 126.0
+offset_bottom = 75.0
+color = Color(0.9607843, 0.9607843, 0.9607843, 1)
+
+[node name="Sprite2D" type="Sprite2D" parent="Panel/ColorRect"]
+position = Vector2(26, 33)
+scale = Vector2(1.05, 1.05)
+texture = ExtResource("2_e2o6t")
+
+[node name="Score" type="Label" parent="Panel/ColorRect"]
+layout_mode = 0
+offset_left = 51.0
+offset_top = 12.0
+offset_right = 95.0
+offset_bottom = 54.0
+text = "0"
+label_settings = SubResource("LabelSettings_feb5d")
+
+[connection signal="eaten" from="Playable area/Rectangle/Apple" to="Playable area/Rectangle/Snake" method="_on_apple_eaten"]
+[connection signal="outofbounds" from="Playable area/Rectangle/Snake" to="." method="_on_snake_gameover"]
+[connection signal="selfcollide" from="Playable area/Rectangle/Snake" to="." method="_on_snake_gameover"]
+[connection signal="timer_run" from="Playable area/Rectangle/Snake" to="." method="_on_snake_timer_run"]
